@@ -19,19 +19,7 @@ CREATE TABLE matches (
 
 
 -- Views
--- Wins view: the number of matches each player has won
-CREATE VIEW matches_wins AS
-SELECT players.id, players.name, count(matches.winner) AS num_wins 
-FROM players LEFT JOIN matches ON players.id = matches.winner
-GROUP BY players.id;
 
--- Losts views: the number of matches each player has lost
-CREATE VIEW matches_losts AS
-SELECT players.id, players.name, count(matches.loser) AS num_losts
-FROM players LEFT JOIN matches ON players.id = matches.loser
-GROUP BY players.id;
-
--- Played views: the number of matches played by each player
 CREATE VIEW tournament_classification AS
 SELECT players.id, players.name,
        (SELECT count(*)
