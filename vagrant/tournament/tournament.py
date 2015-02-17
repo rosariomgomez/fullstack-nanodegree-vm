@@ -106,14 +106,12 @@ def swissPairings():
     """
     pairList = []
     classification = playerStandings()
-    print classification
     count = 0
     while count < len(classification) - 1:
         p1 = classification[count]
         p2 = classification[count + 1]
         pairList.append((p1[0], p1[1], p2[0], p2[1]))
         count += 2
-    print pairList
     return pairList
 
 
