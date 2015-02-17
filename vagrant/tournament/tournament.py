@@ -13,14 +13,29 @@ def connect():
 
 def deleteMatches():
     """Remove all the match records from the database."""
+    pg = connect()
+    c = pg.cursor()
+    c.execute("DELETE FROM matches")
+    pg.commit()
+    pg.close()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
-
+    pg = connect()
+    c = pg.cursor()
+    c.execute("DELETE FROM players")
+    pg.commit()
+    pg.close()
 
 def countPlayers():
     """Returns the number of players currently registered."""
+    pg = connect()
+    c = pg.cursor()
+    c.execute("SELECT COUNT(*) FROM players")
+    num_players = c.fetchall()[0][0]
+    pg.close
+    return num_players
 
 
 def registerPlayer(name):
@@ -32,6 +47,11 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
+    pg = connect()
+    c = pg.cursor()
+    c.execute("INSERT INTO players (name) VALUES (%s)", (name,))
+    pg.commit()
+    pg.close()
 
 
 def playerStandings():
@@ -47,6 +67,12 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    pg = connect()
+    c = pg.cursor()
+    c.execute("SELECT * FROM tournament_classification")
+    classification = c.fetchall() 
+    pg.close()
+    return classification
 
 
 def reportMatch(winner, loser):
@@ -56,7 +82,12 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
- 
+    pg = connect()
+    c = pg.cursor()
+    c.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)", 
+              (winner, loser))
+    pg.commit()
+    pg.close()
  
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
@@ -73,5 +104,24 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    pairList = []
+    classification = playerStandings()
+    print classification
+    count = 0
+    while count < len(classification) - 1:
+        p1 = classification[count]
+        p2 = classification[count + 1]
+        pairList.append((p1[0], p1[1], p2[0], p2[1]))
+        count += 2
+    print pairList
+    return pairList
+
+
+
+
+
+
+
+
 
 
