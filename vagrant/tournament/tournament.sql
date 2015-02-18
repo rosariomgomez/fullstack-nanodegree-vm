@@ -8,7 +8,8 @@
 
 CREATE TABLE players (
 	id serial PRIMARY KEY,
-	name text
+	name text,
+	skipped_round BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE matches (

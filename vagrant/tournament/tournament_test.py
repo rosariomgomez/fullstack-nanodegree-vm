@@ -125,6 +125,72 @@ def testPairings():
     print "8. After one match, players with one win are paired."
 
 
+def testOddParings():
+    deleteMatches()
+    deletePlayers()
+    registerPlayer("Twilight Sparkle")
+    registerPlayer("Fluttershy")
+    registerPlayer("Applejack")
+    registerPlayer("Pinkie Pie")
+    registerPlayer("Christian Grey")
+    standings = playerStandings()
+    [id1, id2, id3, id4, id5] = [row[0] for row in standings]
+    reportMatch(id1, id2)
+    reportMatch(id3, id4)
+    standings = playerStandings() #updated list after registering matches
+
+    pairings = swissPairings()
+    if len(pairings) != 3:
+        raise ValueError(
+            "For five players, swissPairings should return three pairs.")
+    [(pid1, pname1, pid2, pname2), (pid3, pname3, pid4, pname4),
+    (pid5, pname5, pid6, pname6)] = pairings
+    
+    #1. Check that pid2 should be 'bye'
+    if pid2 != 'bye':
+        raise ValueError(
+            "Skipped player should have 'bye' as opponent")
+
+    #2. Check that pid1 should have a free win and the rest of players should 
+    #have the same number of wins
+    new_standings = playerStandings()
+    #order standings and new_standings list of tuples by player_id
+    standings.sort(key = lambda tup: tup[0])
+    new_standings.sort(key = lambda tup: tup[0])
+
+    for ind, player in enumerate(new_standings):
+        if player[0] == pid1:
+            if player[2] != standings[ind][2] + 1:
+                raise ValueError(
+                            "Skipped player should get a free win")
+        else:
+            if player[2] != standings[ind][2]:
+                raise ValueError(
+                    "Non skipped players should have the same number of wins")
+    print "9. Odd number of players correctly paired. Skipped player has a free win"
+
+
+def testFreeWins():
+    '''Check that players can only receive one 'bye' per tournament'''
+    
+    deleteMatches()
+    deletePlayers()
+    registerPlayer("Twilight Sparkle")
+    registerPlayer("Fluttershy")
+    registerPlayer("Applejack")
+    registerPlayer("Pinkie Pie")
+    registerPlayer("Christian Grey")
+    #create 6 rounds of pairing, in the last one
+    #no pairings should be returned as all players have already
+    #skipped a round
+    for i in range(0,6):
+        pairings = swissPairings()
+    if pairings:
+        raise ValueError("All players should already received a free win")
+    print "10. Skipped matches are correctly given in a tournament with an odd \
+    number of players "
+
+
 if __name__ == '__main__':
     testDeleteMatches()
     testDelete()
@@ -134,6 +200,8 @@ if __name__ == '__main__':
     testStandingsBeforeMatches()
     testReportMatches()
     testPairings()
+    testOddParings()
+    testFreeWins()
     print "Success!  All tests pass!"
 
 
