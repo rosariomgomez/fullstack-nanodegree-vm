@@ -7,8 +7,23 @@ cd /vagrant/tournament
 python tournament_test.py
 ```
   
-This will run the battery of tests against the code 
+This will run the battery of tests against the code. All tests should pass with the following output in the terminal window:
 
+```
+1. Old matches can be deleted.
+2. Player records can be deleted.
+3. After deleting, countPlayers() returns zero.
+4. After registering a player, countPlayers() returns 1.
+5. Players can be registered and deleted.
+6. Newly registered players appear in the standings with no matches.
+7. After a match, players have updated standings.
+8. After one match, players with one win are paired.
+9. Odd number of players correctly paired. Skipped player has a free win
+10. Skipped matches are correctly given in a tournament with an odd number of players
+11. Players are correclty matched with tied games
+Success!  All tests pass!
+
+```
 
 ### Code versions
 
