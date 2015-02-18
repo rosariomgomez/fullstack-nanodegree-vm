@@ -76,17 +76,18 @@ def playerStandings():
     return classification
 
 
-def reportMatch(winner, loser):
+def reportMatch(player1, player2, winner):
     """Records the outcome of a single match between two players.
 
     Args:
-      winner:  the id number of the player who won
-      loser:  the id number of the player who lost
+      player1, player2:  the id number of the players
+      winner: player1's id (player1 wins), player2's id (player2 wins) 
+              or None (tied game)
     """
     pg = connect()
     c = pg.cursor()
-    c.execute("INSERT INTO matches (winner, loser) VALUES (%s, %s)", 
-              (winner, loser))
+    c.execute("INSERT INTO matches (player1, player2, winner) VALUES (%s, %s, %s)", 
+              (player1, player2, winner))
     pg.commit()
     pg.close()
  
@@ -153,8 +154,8 @@ def swissPairings():
                     pg.commit()
                     pg.close()
                     found = True
-                    #add a win match to the player
-                    reportMatch(player[0], None)
+                    #add a free win match to the player
+                    reportMatch(player[0], None, player[0])
                     #add player to result list
                     pairList.append((player[0], player[1], "bye", "skipped round"))
                     #remove player from classification list

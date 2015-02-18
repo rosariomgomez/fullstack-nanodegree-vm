@@ -14,8 +14,9 @@ CREATE TABLE players (
 
 CREATE TABLE matches (
 	id serial PRIMARY KEY,
-	winner integer REFERENCES players(id),
-	loser integer REFERENCES players(id)
+	player1 integer REFERENCES players(id),
+	player2 integer REFERENCES players(id),
+	winner integer
 );
 
 
@@ -28,6 +29,6 @@ SELECT players.id, players.name,
         WHERE matches.winner = players.id) AS num_wins,
        (SELECT count(*)
         FROM matches
-        WHERE players.id IN (winner, loser)) AS num_played
+        WHERE players.id IN (player1, player2)) AS num_played
 FROM players
 ORDER BY num_wins DESC;

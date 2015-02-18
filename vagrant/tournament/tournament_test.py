@@ -88,8 +88,8 @@ def testReportMatches():
     registerPlayer("Diane Grant")
     standings = playerStandings()
     [id1, id2, id3, id4] = [row[0] for row in standings]
-    reportMatch(id1, id2)
-    reportMatch(id3, id4)
+    reportMatch(id1, id2, id1)
+    reportMatch(id3, id4, id3)
     standings = playerStandings()
     for (i, n, w, m) in standings:
         if m != 1:
@@ -110,8 +110,8 @@ def testPairings():
     registerPlayer("Pinkie Pie")
     standings = playerStandings()
     [id1, id2, id3, id4] = [row[0] for row in standings]
-    reportMatch(id1, id2)
-    reportMatch(id3, id4)
+    reportMatch(id1, id2, id1)
+    reportMatch(id3, id4, id3)
     pairings = swissPairings()
     if len(pairings) != 2:
         raise ValueError(
@@ -135,8 +135,8 @@ def testOddParings():
     registerPlayer("Christian Grey")
     standings = playerStandings()
     [id1, id2, id3, id4, id5] = [row[0] for row in standings]
-    reportMatch(id1, id2)
-    reportMatch(id3, id4)
+    reportMatch(id1, id2, id1)
+    reportMatch(id3, id4, id3)
     standings = playerStandings() #updated list after registering matches
 
     pairings = swissPairings()
@@ -190,6 +190,27 @@ def testFreeWins():
     print "10. Skipped matches are correctly given in a tournament with an odd \
     number of players "
 
+def testTiedGames():
+    deleteMatches()
+    deletePlayers()
+    registerPlayer("Twilight Sparkle")
+    registerPlayer("Fluttershy")
+    registerPlayer("Applejack")
+    registerPlayer("Pinkie Pie")
+    standings = playerStandings()
+    [id1, id2, id3, id4] = [row[0] for row in standings]
+    reportMatch(id1, id2, None)
+    reportMatch(id3, id4, id3)
+    reportMatch(id1, id4, id1)
+    pairings = swissPairings()
+    [(pid1, pname1, pid2, pname2), (pid3, pname3, pid4, pname4)] = pairings
+    correct_pairs = set([frozenset([id1, id3]), frozenset([id2, id4])])
+    actual_pairs = set([frozenset([pid1, pid2]), frozenset([pid3, pid4])])
+    if correct_pairs != actual_pairs:
+        raise ValueError(
+            "After a tied match, players are not correclty matched")
+    print "11. Players are correclty matched with tied games"
+
 
 if __name__ == '__main__':
     testDeleteMatches()
@@ -202,6 +223,7 @@ if __name__ == '__main__':
     testPairings()
     testOddParings()
     testFreeWins()
+    testTiedGames()
     print "Success!  All tests pass!"
 
 
