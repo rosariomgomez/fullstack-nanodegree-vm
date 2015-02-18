@@ -1,8 +1,7 @@
 ## Project 2: Swiss-system tournament implementation
 
 ### How to run the code
-After following the detailed instructions in the <a href="https://www.udacity.com/wiki/ud197/install-vagrant">course documentation:</a>
-In a terminal window, ssh into the VM and run the following commands:  
+After following the detailed instructions in the <a href="https://www.udacity.com/wiki/ud197/install-vagrant">course documentation,</a> run the following commands into the VM:
 ```
 cd /vagrant/tournament
 python tournament_test.py
