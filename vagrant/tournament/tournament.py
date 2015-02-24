@@ -12,6 +12,15 @@ def connect():
     return psycopg2.connect("dbname=tournament")
 
 
+def deleteTournaments():
+    """Remove all the tournament records from the database."""
+    pg = connet()
+    c = pg.cursor()
+    c.execute("DELETE FROM tournaments")
+    pg.commit()
+    pg.close()
+
+
 def deleteMatches():
     """Remove all the match records from the database."""
     pg = connect()
@@ -29,6 +38,7 @@ def deletePlayers():
     pg.commit()
     pg.close()
 
+
 def countPlayers():
     """Returns the number of players currently registered."""
     pg = connect()
@@ -41,9 +51,7 @@ def countPlayers():
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
-  
-    The database assigns a unique serial id number for the player.  (This
-    should be handled by your SQL database schema, not in your Python code.)
+    The database assigns a unique serial id number for the player.  
   
     Args:
       name: the player's full name (need not be unique).
@@ -133,21 +141,34 @@ def swissPairings():
 
     pairList = []
     classification = playerStandings()
-    #take into account odd number of players by assigning a 'bye' round to one player
+    
+    #take into account odd number of players by assigning a 'bye' round to one 
     if len(classification)%2 != 0:
+        
         #make sure that not all players already had an skipped round
         c.execute("SELECT skipped_round FROM players")
         rows = c.fetchall()
         skips = [row[0] for row in rows]
-        if skips.count(True) != len(skips):
+        
+        if skips.count(True) != len(skips): 
+
+            #there's at least 1 player without a 'bye' round
             r = range(0, len(classification))
             found = False
+
             while not found:
+            #Randomly pick one player from the classification list
+            #If she/he doesn't have a 'bye' round:
+                #Add the free win
+                #Add the player to the final swiss pairing list
+                #Remove the player from the remaining list of players to be paired
+                
                 rand_index = random.choice(r)
                 player = classification[rand_index]
                 c.execute("SELECT skipped_round FROM players WHERE players.id = (%s)",
                         (player[0],))
                 already_skipped = c.fetchall()[0][0]
+                
                 if not already_skipped: #player didn't skipped a round yet
                     c.execute("UPDATE players SET skipped_round = TRUE WHERE players.id = (%s)",
                     (player[0],))
@@ -160,9 +181,12 @@ def swissPairings():
                     pairList.append((player[0], player[1], "bye", "skipped round"))
                     #remove player from classification list
                     del classification[rand_index]
+            
             #match the rest of even players
             pairList.extend(evenPairings(classification))
+    
     #even number of players
     else:
         pairList.extend(evenPairings(classification))
+    
     return pairList
